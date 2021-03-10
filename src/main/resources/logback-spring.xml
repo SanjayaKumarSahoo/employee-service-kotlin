@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <property name="BASE_PATH" value="/tmp/log"/>
+    <!--CHANGE ME -->
+    <property name="FILE_NAME" value="employee-service.log"/>
+    <!--CHANGE ME -->
+    <property name="FILE_PATTERN" value="employee-service.%i"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{50}.%L - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="asyncConsoleAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="STDOUT"/>
+        <queueSize>10000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <appender name="rollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${BASE_PATH}/${FILE_NAME}</file>
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{50}.%L - %msg%n
+            </pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${BASE_PATH}/${FILE_PATTERN}</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>5</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>5MB</maxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <appender name="asyncFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="rollingFileAppender"/>
+        <queueSize>10000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+    </appender>
+
+    <logger name="org.springframework" level="INFO" additivity="false">
+        <appender-ref ref="asyncConsoleAppender"/>
+        <appender-ref ref="asyncFileAppender"/>
+    </logger>
+
+    <logger name="com.employee" level="INFO" additivity="false">
+        <appender-ref ref="asyncConsoleAppender"/>
+        <appender-ref ref="asyncFileAppender"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="asyncConsoleAppender"/>
+        <appender-ref ref="asyncFileAppender"/>
+    </root>
+
+</configuration>
