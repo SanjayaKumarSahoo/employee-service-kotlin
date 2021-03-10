@@ -1,11 +1,13 @@
 package com.employee
 
+import com.employee.repository.Department
+import com.employee.repository.Employee
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.annotation.DirtiesContext
-import java.util.Date
+import java.util.*
 
 @DataJpaTest
 @DirtiesContext

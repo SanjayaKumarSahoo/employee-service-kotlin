@@ -1,5 +1,8 @@
-package com.employee
+package com.employee.config
 
+import com.employee.EmployeeRepository
+import com.employee.service.EmployeeServiceImpl
+import com.employee.service.IEmployeeService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -8,5 +11,5 @@ class ApplicationConfiguration {
 
     @Bean
     fun employeeService(employeeRepository: EmployeeRepository): IEmployeeService =
-        EmployeeServiceImpl(employeeRepository = employeeRepository)
+            EmployeeServiceImpl(employeeRepository = employeeRepository)
 }
