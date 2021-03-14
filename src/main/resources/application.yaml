@@ -2,14 +2,14 @@ spring:
   datasource:
     driverClassName: org.h2.Driver
     password: ""
-    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:testdb;INIT=CREATE SCHEMA IF NOT EXISTS SCOTT;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
 
 basic-auths:
   - user: allen
-    password: ENC(ViXgVytr8cp2D5pwkFuBCFH1mx+R2ZYLbiXbc7/hq4d3AOwr08nTYQ==)
+    password: password
     roles:
       - READ
       - WRITE

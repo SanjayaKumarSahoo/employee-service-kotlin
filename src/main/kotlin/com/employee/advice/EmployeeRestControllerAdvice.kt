@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import java.util.*
+import java.util.ArrayList
 import java.util.stream.Collectors
 
 
@@ -24,11 +24,6 @@ import java.util.stream.Collectors
 class EmployeeRestControllerAdvice @Autowired constructor(private val messageSource: MessageSource) :
     ResponseEntityExceptionHandler() {
 
-    @ExceptionHandler(EmployeeServiceException::class)
-    fun handleError(exception: EmployeeServiceException): ResponseEntity<ErrorResponse> {
-        val errorcode: ErrorCode = exception.errorCode
-        return ResponseEntity<ErrorResponse>(ErrorResponse(errorcode), HttpStatus.valueOf(errorcode.httpStatusCode))
-    }
 
     @ExceptionHandler(Throwable::class)
     fun anyError(exception: Throwable?): ResponseEntity<ErrorResponse> {
@@ -36,8 +31,16 @@ class EmployeeRestControllerAdvice @Autowired constructor(private val messageSou
         return ResponseEntity<ErrorResponse>(ErrorResponse(errorCode), HttpStatus.valueOf(errorCode.httpStatusCode))
     }
 
-    override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders,
-                                              status: HttpStatus, request: WebRequest): ResponseEntity<Any> {
+    @ExceptionHandler(EmployeeServiceException::class)
+    fun handleError(exception: EmployeeServiceException): ResponseEntity<ErrorResponse> {
+        val errorcode: ErrorCode = exception.errorCode
+        return ResponseEntity<ErrorResponse>(ErrorResponse(errorcode), HttpStatus.valueOf(errorcode.httpStatusCode))
+    }
+
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException, headers: HttpHeaders,
+        status: HttpStatus, request: WebRequest
+    ): ResponseEntity<Any> {
         val result = ex.bindingResult
         val fieldErrors = result.fieldErrors
         val fieldErrorDetails = processFieldErrors(fieldErrors)
