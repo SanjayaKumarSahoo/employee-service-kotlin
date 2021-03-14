@@ -6,3 +6,10 @@ spring:
     username: sa
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+
+basic-auths:
+  - user: allen
+    password: ENC(ViXgVytr8cp2D5pwkFuBCFH1mx+R2ZYLbiXbc7/hq4d3AOwr08nTYQ==)
+    roles:
+      - READ
+      - WRITE
