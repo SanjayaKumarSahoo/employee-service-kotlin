@@ -1,7 +1,7 @@
-package com.employee
+package com.employee.repository
 
-import com.employee.repository.Employee
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface EmployeeRepository : JpaRepository<Employee, Long>
 
+interface DepartmentRepository : JpaRepository<Department, Long>

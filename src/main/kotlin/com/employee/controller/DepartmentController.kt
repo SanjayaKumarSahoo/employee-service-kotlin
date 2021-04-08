@@ -1,9 +1,10 @@
 package com.employee.controller
 
-import EmployeeData
+import DepartmentData
 import com.employee.error.ErrorMessages
 import com.employee.exception.EmployeeServiceException
-import com.employee.service.IEmployeeService
+import com.employee.service.DepartmentId
+import com.employee.service.IDepartmentService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
@@ -19,15 +20,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/employees")
-@Api(tags = ["Employees API"], description = "Employees")
-class EmployeeController(private val employeeService: IEmployeeService) {
+@RequestMapping("/departments")
+@Api(tags = ["Department API"], description = "Departments")
+
+class DepartmentController(private val departmentService: IDepartmentService) {
 
     @ApiOperation(
-        value = "Post employee details",
-        notes = "Post employee details",
+        value = "Post department details",
+        notes = "Post department details",
         code = 201,
-        response = String::class
+        response = DepartmentId::class
     )
     @ApiResponses(
         ApiResponse(
@@ -37,17 +39,17 @@ class EmployeeController(private val employeeService: IEmployeeService) {
         )
     )
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createEmployee(@RequestBody employee: EmployeeData): ResponseEntity<Any> {
-        employeeService.createEmployee(employee)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+    fun createDepartment(@RequestBody departmentData: DepartmentData): ResponseEntity<DepartmentId> {
+        val departmentId = departmentService.createDepartment(departmentData = departmentData)
+        return ResponseEntity.status(HttpStatus.OK).body(departmentId)
 
     }
 
     @ApiOperation(
-        value = "Get employee details by id",
-        notes = "Get employee details by id",
+        value = "Get department details by id",
+        notes = "Get department details by id",
         code = 200,
-        response = EmployeeData::class
+        response = DepartmentData::class
     )
     @ApiResponses(
         ApiResponse(
@@ -57,8 +59,8 @@ class EmployeeController(private val employeeService: IEmployeeService) {
         )
     )
     @GetMapping("/{id}")
-    fun getEmployeeById(@PathVariable("id") id: Long): ResponseEntity<EmployeeData> {
-        val employeeData = employeeService.getEmployeeById(id)
-        return ResponseEntity.ok(employeeData)
+    fun getEmployeeById(@PathVariable("id") id: Long): ResponseEntity<DepartmentData> {
+        val departmentData = departmentService.getDepartmentById(id)
+        return ResponseEntity.ok(departmentData)
     }
 }

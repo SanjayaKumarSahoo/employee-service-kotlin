@@ -1,16 +1,36 @@
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonProperty
 
 data class DepartmentData(
-        var dName: String,
-        var loc: String,
+    @JsonProperty("name")
+    var dName: String,
+
+    @JsonProperty("location")
+    var loc: String,
+
+    @JsonProperty("deptNo")
+    var deptNo: Long?
 )
 
+
 data class EmployeeData(
-        var ename: String,
-        var job: String,
-        var mgr: Int,
-        var hireDate: Date,
-        var sal: Double,
-        var comm: Double,
-        var department: DepartmentData
+    @JsonProperty("name")
+    var ename: String,
+
+    @JsonProperty("job")
+    var job: String,
+
+    @JsonProperty("manager")
+    var mgr: Int,
+
+    @JsonProperty("hireDate")
+    var hireDate: String,
+
+    @JsonProperty("salary")
+    var sal: Double,
+
+    @JsonProperty("commission")
+    var comm: Double,
+
+    @JsonProperty("department")
+    var department: DepartmentData
 )

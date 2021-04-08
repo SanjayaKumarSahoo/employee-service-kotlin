@@ -6,6 +6,12 @@ spring:
     username: sa
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    show_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
 
 basic-auths:
   - user: allen

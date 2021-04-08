@@ -2,34 +2,38 @@ package com.employee.service
 
 import DepartmentData
 import EmployeeData
-import com.employee.EmployeeRepository
 import com.employee.error.ErrorCodes
 import com.employee.exception.EmployeeServiceException
 import com.employee.repository.Department
 import com.employee.repository.Employee
+import com.employee.repository.EmployeeRepository
 import org.springframework.transaction.annotation.Transactional
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.persistence.EntityNotFoundException
 
 
+data class EmployeeId(val employeeId: Long)
+
+
 interface IEmployeeService {
-    fun createEmployee(employeeData: EmployeeData)
+    fun createEmployee(employeeData: EmployeeData): EmployeeId?
     fun getEmployeeById(id: Long): EmployeeData
 }
 
 open class EmployeeServiceImpl(private val employeeRepository: EmployeeRepository) : IEmployeeService {
 
     @Transactional
-    override fun createEmployee(employeeData: EmployeeData) {
+    override fun createEmployee(employeeData: EmployeeData): EmployeeId? {
         val employee = convertEmployeeDataToEmployeeEntity(employeeData)
-        employeeRepository.save(employee)
+        return employeeRepository.save(employee).empno?.let { EmployeeId(employeeId = it) }
     }
 
     @Transactional(readOnly = true)
     override fun getEmployeeById(id: Long): EmployeeData {
         try {
             val employee = employeeRepository.getOne(id)
-            val employeeData = convertEmployeeToEmployeeData(employee = employee)
-            return employeeData
+            return convertEmployeeToEmployeeData(employee = employee)
         } catch (e: EntityNotFoundException) {
             throw EmployeeServiceException(ErrorCodes.EMPLOYEE_NOT_FOUND)
         }
@@ -44,24 +48,35 @@ open class EmployeeServiceImpl(private val employeeRepository: EmployeeRepositor
             ename = employeeData.ename,
             job = employeeData.job,
             mgr = employeeData.mgr,
-            hireDate = employeeData.hireDate,
+            hireDate = parseDate(employeeData.hireDate),
             sal = employeeData.sal,
             comm = employeeData.comm,
             department = department
         )
     }
 
+    private fun parseDate(date: String): Date {
+        val formatter = SimpleDateFormat("dd-MM-yyyy")
+        return formatter.parse(date);
+    }
+
+    private fun formatDate(date: Date): String {
+        val formatter = SimpleDateFormat("dd-MM-yyyy")
+        return formatter.format(date);
+    }
+
     private fun convertEmployeeToEmployeeData(employee: Employee): EmployeeData {
         val departmentData = DepartmentData(
             dName = employee.department.dName,
-            loc = employee.department.loc
+            loc = employee.department.loc,
+            deptNo = employee.department.deptNo
         )
 
         return EmployeeData(
             ename = employee.ename,
             job = employee.job,
             mgr = employee.mgr,
-            hireDate = employee.hireDate,
+            hireDate = formatDate(employee.hireDate),
             sal = employee.sal,
             comm = employee.comm,
             department = departmentData
