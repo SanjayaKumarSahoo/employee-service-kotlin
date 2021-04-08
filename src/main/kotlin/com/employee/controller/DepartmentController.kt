@@ -1,9 +1,9 @@
 package com.employee.controller
 
 import DepartmentData
+import DepartmentId
 import com.employee.error.ErrorMessages
 import com.employee.exception.EmployeeServiceException
-import com.employee.service.DepartmentId
 import com.employee.service.IDepartmentService
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation

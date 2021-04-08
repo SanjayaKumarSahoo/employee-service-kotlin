@@ -34,3 +34,8 @@ data class EmployeeData(
     @JsonProperty("department")
     var department: DepartmentData
 )
+
+data class DepartmentId(val deptNo: Long)
+
+data class EmployeeId(val employeeId: Long)
+

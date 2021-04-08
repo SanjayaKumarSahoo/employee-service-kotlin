@@ -2,6 +2,7 @@ package com.employee.service
 
 import DepartmentData
 import EmployeeData
+import EmployeeId
 import com.employee.error.ErrorCodes
 import com.employee.exception.EmployeeServiceException
 import com.employee.repository.Department
@@ -13,7 +14,6 @@ import java.util.Date
 import javax.persistence.EntityNotFoundException
 
 
-data class EmployeeId(val employeeId: Long)
 
 
 interface IEmployeeService {

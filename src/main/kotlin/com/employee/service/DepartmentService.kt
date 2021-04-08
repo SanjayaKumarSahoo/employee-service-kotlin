@@ -1,6 +1,7 @@
 package com.employee.service
 
 import DepartmentData
+import DepartmentId
 import com.employee.error.ErrorCodes
 import com.employee.exception.EmployeeServiceException
 import com.employee.repository.Department
@@ -9,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 import javax.persistence.EntityNotFoundException
 
 
-data class DepartmentId(val departmentId: Long)
 
 interface IDepartmentService {
     fun createDepartment(departmentData: DepartmentData): DepartmentId?
@@ -22,7 +22,7 @@ open class DepartmentServiceImpl(private val departmentRepository: DepartmentRep
     @Transactional
     override fun createDepartment(departmentData: DepartmentData): DepartmentId? {
         val department = convertDepartmentDataToDepartmentEntity(departmentData)
-        return departmentRepository.save(department).deptNo?.let { DepartmentId(departmentId = it) };
+        return departmentRepository.save(department).deptNo?.let { DepartmentId(deptNo = it) };
     }
 
     @Transactional(readOnly = true)
