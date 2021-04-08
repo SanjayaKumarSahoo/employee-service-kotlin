@@ -13,6 +13,11 @@ spring:
       hibernate:
         format_sql: true
 
+# required to support h2c (http2 with plain text)
+server:
+  http2:
+    enabled: false
+
 basic-auths:
   - user: allen
     password: password

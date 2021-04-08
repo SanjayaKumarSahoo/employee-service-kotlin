@@ -11,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.PropertyAccessor
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import org.apache.catalina.connector.Connector
+import org.apache.coyote.http2.Http2Protocol
+import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -45,4 +48,11 @@ class ApplicationConfiguration {
                 .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
                 .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
     }
+
+    // required for setting of http2 protocol in tomcat
+    @Bean
+    fun connectorCustomizer(): TomcatConnectorCustomizer? {
+        return TomcatConnectorCustomizer { connector: Connector -> connector.addUpgradeProtocol(Http2Protocol()) }
+    }
+
 }
