@@ -4,5 +4,6 @@
   "manager": 1000,
   "hireDate": "01-01-2020",
   "salary": 1000.0,
-  "commission": 10.0
+  "commission": 10.0,
+  "deptNo": 1
 }
