@@ -20,8 +20,8 @@ import org.springframework.context.annotation.Primary
 class ApplicationConfiguration {
 
     @Bean
-    fun employeeService(employeeRepository: EmployeeRepository): IEmployeeService =
-            EmployeeServiceImpl(employeeRepository = employeeRepository)
+    fun employeeService(employeeRepository: EmployeeRepository, departmentRepository: DepartmentRepository): IEmployeeService =
+            EmployeeServiceImpl(employeeRepository = employeeRepository, departmentRepository)
 
 
     @Bean

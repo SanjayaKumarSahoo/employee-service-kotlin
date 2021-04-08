@@ -1,6 +1,7 @@
 package com.employee.controller
 
 import EmployeeData
+import EmployeeId
 import com.employee.error.ErrorMessages
 import com.employee.exception.EmployeeServiceException
 import com.employee.service.IEmployeeService
@@ -11,12 +12,7 @@ import io.swagger.annotations.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/employees")
@@ -24,37 +20,36 @@ import org.springframework.web.bind.annotation.RestController
 class EmployeeController(private val employeeService: IEmployeeService) {
 
     @ApiOperation(
-        value = "Post employee details",
-        notes = "Post employee details",
-        code = 201,
-        response = String::class
+            value = "Post employee details",
+            notes = "Post employee details",
+            code = 201,
+            response = String::class
     )
     @ApiResponses(
-        ApiResponse(
-            code = 500,
-            message = ErrorMessages.INTERNAL_ERROR,
-            response = EmployeeServiceException::class
-        )
+            ApiResponse(
+                    code = 500,
+                    message = ErrorMessages.INTERNAL_ERROR,
+                    response = EmployeeServiceException::class
+            )
     )
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createEmployee(@RequestBody employee: EmployeeData): ResponseEntity<Any> {
-        employeeService.createEmployee(employee)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
-
+    fun createEmployee(@RequestBody employee: EmployeeData): ResponseEntity<EmployeeId> {
+        val employeeId = employeeService.createEmployee(employee)
+        return ResponseEntity.status(HttpStatus.OK).body(employeeId)
     }
 
     @ApiOperation(
-        value = "Get employee details by id",
-        notes = "Get employee details by id",
-        code = 200,
-        response = EmployeeData::class
+            value = "Get employee details by id",
+            notes = "Get employee details by id",
+            code = 200,
+            response = EmployeeData::class
     )
     @ApiResponses(
-        ApiResponse(
-            code = 500,
-            message = ErrorMessages.INTERNAL_ERROR,
-            response = EmployeeServiceException::class
-        )
+            ApiResponse(
+                    code = 500,
+                    message = ErrorMessages.INTERNAL_ERROR,
+                    response = EmployeeServiceException::class
+            )
     )
     @GetMapping("/{id}")
     fun getEmployeeById(@PathVariable("id") id: Long): ResponseEntity<EmployeeData> {

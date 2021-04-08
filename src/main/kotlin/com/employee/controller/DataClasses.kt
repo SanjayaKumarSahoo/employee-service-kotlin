@@ -3,7 +3,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class DepartmentData(
         @JsonProperty("name") var dName: String,
         @JsonProperty("location") var loc: String,
-        @JsonProperty("departmentNo") var deptNo: Long?
+        @JsonProperty("deptNo") var deptNo: Long?
 )
 
 data class EmployeeData(
@@ -25,8 +25,11 @@ data class EmployeeData(
         @JsonProperty("commission")
         var comm: Double,
 
-        @JsonProperty("department")
-        var department: DepartmentData
+        @JsonProperty("deptNo")
+        var deptNo: Long,
+
+        @JsonProperty("empNo")
+        var empNo: Long?
 )
 
 data class DepartmentId(val deptNo: Long)

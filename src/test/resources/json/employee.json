@@ -1,12 +1,8 @@
 {
-  "ename": "ALLEN",
+  "name": "ALLEN",
   "job": "MANAGER",
-  "mgr": 1000,
+  "manager": 1000,
   "hireDate": "01-01-2020",
-  "sal": 1000.0,
-  "comm": 10.0,
-  "department": {
-    "dName": "SALES",
-    "loc": "Bangalore"
-  }
+  "salary": 1000.0,
+  "commission": 10.0
 }
