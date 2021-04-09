@@ -12,17 +12,19 @@ import io.swagger.annotations.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/departments")
 @Api(tags = ["Department API"], description = "Departments")
-
+@Validated
 class DepartmentController(private val departmentService: IDepartmentService) {
 
     @ApiOperation(
@@ -39,7 +41,7 @@ class DepartmentController(private val departmentService: IDepartmentService) {
         )
     )
     @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
-    fun createDepartment(@RequestBody departmentData: DepartmentData): ResponseEntity<DepartmentId> {
+    fun createDepartment(@RequestBody @Valid departmentData: DepartmentData): ResponseEntity<DepartmentId> {
         val departmentId = departmentService.createDepartment(departmentData = departmentData)
         return ResponseEntity.status(HttpStatus.OK).body(departmentId)
 
@@ -59,7 +61,7 @@ class DepartmentController(private val departmentService: IDepartmentService) {
         )
     )
     @GetMapping("/{id}")
-    fun getEmployeeById(@PathVariable("id") id: Long): ResponseEntity<DepartmentData> {
+    fun getEmployeeById(@PathVariable("id", required = true) id: Long): ResponseEntity<DepartmentData> {
         val departmentData = departmentService.getDepartmentById(id)
         return ResponseEntity.ok(departmentData)
     }

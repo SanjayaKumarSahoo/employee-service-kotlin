@@ -20,7 +20,7 @@ server:
 
 basic-auths:
   - user: allen
-    password: password
+    password: ENC(emnFDJGGvl20XUhTKR/NlY2/3qUkkl/c)
     roles:
       - READ
       - WRITE

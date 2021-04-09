@@ -1,5 +1,6 @@
 package com.employee.config
 
+import com.employee.Constants
 import com.employee.props.ApplicationProperties
 import com.employee.repository.DepartmentRepository
 import com.employee.repository.EmployeeRepository
@@ -13,23 +14,53 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.apache.catalina.connector.Connector
 import org.apache.coyote.http2.Http2Protocol
+import org.jasypt.encryption.StringEncryptor
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor
 import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.context.support.ReloadableResourceBundleMessageSource
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 
 
 @Configuration
 class ApplicationConfiguration {
 
+    @Bean("jasyptStringEncryptor")
+    fun stringEncryptor(): StringEncryptor? {
+        val encryptor = StandardPBEStringEncryptor()
+        encryptor.setPassword(System.getenv(Constants.ENV_PASSWORD))
+        return encryptor
+    }
+
     @Bean
-    fun employeeService(employeeRepository: EmployeeRepository, departmentRepository: DepartmentRepository): IEmployeeService =
-            EmployeeServiceImpl(employeeRepository = employeeRepository, departmentRepository)
+    fun messageSource(): MessageSource? {
+        val messageSource = ReloadableResourceBundleMessageSource()
+        messageSource.setBasename("classpath:messages")
+        messageSource.setDefaultEncoding("UTF-8")
+        return messageSource
+    }
+
+    @Bean
+    fun getValidator(messageSource: MessageSource?): LocalValidatorFactoryBean? {
+        val bean = LocalValidatorFactoryBean()
+        bean.setValidationMessageSource(messageSource!!)
+        return bean
+    }
+
+    @Bean
+    fun employeeService(
+        employeeRepository: EmployeeRepository,
+        departmentRepository: DepartmentRepository
+    ): IEmployeeService =
+        EmployeeServiceImpl(employeeRepository = employeeRepository, departmentRepository)
 
 
     @Bean
     fun departmentService(departmentRepository: DepartmentRepository): IDepartmentService =
-            DepartmentServiceImpl(departmentRepository = departmentRepository)
+        DepartmentServiceImpl(departmentRepository = departmentRepository)
 
 
     @Bean
@@ -41,12 +72,12 @@ class ApplicationConfiguration {
     @Primary
     fun objectMapper(): ObjectMapper {
         return ObjectMapper()
-                .registerKotlinModule()
-                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-                .setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
+            .registerKotlinModule()
+            .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+            .setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.NONE)
+            .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
+            .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
+            .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
     }
 
     // required for setting of http2 protocol in tomcat
@@ -54,5 +85,10 @@ class ApplicationConfiguration {
     fun connectorCustomizer(): TomcatConnectorCustomizer? {
         return TomcatConnectorCustomizer { connector: Connector -> connector.addUpgradeProtocol(Http2Protocol()) }
     }
-
 }
+
+/*fun main(args: Array<String>) {
+    val encryptor = StandardPBEStringEncryptor()
+    encryptor.setPassword("password")
+    println(encryptor.encrypt("password"))
+}*/
