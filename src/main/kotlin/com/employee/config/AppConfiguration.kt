@@ -22,9 +22,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 import org.springframework.context.support.ReloadableResourceBundleMessageSource
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.transaction.annotation.EnableTransactionManagement
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
 
 
+@EnableTransactionManagement
+@EnableJpaRepositories(basePackages = ["com.employee.repository"])
 @Configuration
 class ApplicationConfiguration {
 
@@ -52,15 +56,15 @@ class ApplicationConfiguration {
 
     @Bean
     fun employeeService(
-        employeeRepository: EmployeeRepository,
-        departmentRepository: DepartmentRepository
+            employeeRepository: EmployeeRepository,
+            departmentRepository: DepartmentRepository
     ): IEmployeeService =
-        EmployeeServiceImpl(employeeRepository = employeeRepository, departmentRepository)
+            EmployeeServiceImpl(employeeRepository = employeeRepository, departmentRepository)
 
 
     @Bean
     fun departmentService(departmentRepository: DepartmentRepository): IDepartmentService =
-        DepartmentServiceImpl(departmentRepository = departmentRepository)
+            DepartmentServiceImpl(departmentRepository = departmentRepository)
 
 
     @Bean
@@ -72,12 +76,12 @@ class ApplicationConfiguration {
     @Primary
     fun objectMapper(): ObjectMapper {
         return ObjectMapper()
-            .registerKotlinModule()
-            .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-            .setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.NONE)
-            .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
-            .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
-            .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
+                .registerKotlinModule()
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+                .setVisibility(PropertyAccessor.CREATOR, JsonAutoDetect.Visibility.NONE)
+                .setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE)
+                .setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE)
+                .setVisibility(PropertyAccessor.IS_GETTER, JsonAutoDetect.Visibility.NONE)
     }
 
     // required for setting of http2 protocol in tomcat

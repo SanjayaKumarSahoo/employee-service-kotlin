@@ -5,6 +5,8 @@ import com.employee.error.ErrorCodes
 import com.employee.error.ErrorResponse
 import com.employee.error.validation.FieldErrorDetail
 import com.employee.exception.EmployeeServiceException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.http.HttpHeaders
@@ -22,24 +24,27 @@ import java.util.stream.Collectors
 
 @RestControllerAdvice
 class EmployeeRestControllerAdvice @Autowired constructor(private val messageSource: MessageSource) :
-    ResponseEntityExceptionHandler() {
+        ResponseEntityExceptionHandler() {
 
+    var logger: Logger = LoggerFactory.getLogger(EmployeeRestControllerAdvice::class.java)
 
     @ExceptionHandler(Throwable::class)
     fun anyError(exception: Throwable?): ResponseEntity<ErrorResponse> {
+        logger.error("Error occurred", exception)
         val errorCode: ErrorCode = ErrorCodes.INTERNAL_ERROR
         return ResponseEntity<ErrorResponse>(ErrorResponse(errorCode), HttpStatus.valueOf(errorCode.httpStatusCode))
     }
 
     @ExceptionHandler(EmployeeServiceException::class)
     fun handleError(exception: EmployeeServiceException): ResponseEntity<ErrorResponse> {
+        logger.error("Error occurred", exception)
         val errorcode: ErrorCode = exception.errorCode
         return ResponseEntity<ErrorResponse>(ErrorResponse(errorcode), HttpStatus.valueOf(errorcode.httpStatusCode))
     }
 
     override fun handleMethodArgumentNotValid(
-        ex: MethodArgumentNotValidException, headers: HttpHeaders,
-        status: HttpStatus, request: WebRequest
+            ex: MethodArgumentNotValidException, headers: HttpHeaders,
+            status: HttpStatus, request: WebRequest
     ): ResponseEntity<Any> {
         val result = ex.bindingResult
         val fieldErrors = result.fieldErrors
@@ -52,8 +57,7 @@ class EmployeeRestControllerAdvice @Autowired constructor(private val messageSou
     private fun processFieldErrors(fieldErrors: List<FieldError>): List<FieldErrorDetail> {
         val errors: MutableList<FieldErrorDetail> = ArrayList()
         for (fieldError in fieldErrors) {
-            val localizedErrorMessage = fieldError.field + " " + fieldError.defaultMessage
-            errors.add(FieldErrorDetail(fieldError.field, localizedErrorMessage))
+            fieldError.defaultMessage?.let { FieldErrorDetail(fieldError.field, it) }?.let { errors.add(it) }
         }
         return errors
     }

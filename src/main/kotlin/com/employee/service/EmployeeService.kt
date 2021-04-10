@@ -8,10 +8,12 @@ import com.employee.repository.Department
 import com.employee.repository.DepartmentRepository
 import com.employee.repository.Employee
 import com.employee.repository.EmployeeRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 import org.springframework.transaction.annotation.Transactional
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.persistence.EntityNotFoundException
 
 
 interface IEmployeeService {
@@ -22,12 +24,19 @@ interface IEmployeeService {
 open class EmployeeServiceImpl(private val employeeRepository: EmployeeRepository,
                                private val departmentRepository: DepartmentRepository) : IEmployeeService {
 
+    var logger: Logger = LoggerFactory.getLogger(EmployeeServiceImpl::class.java)
+
     @Transactional
     override fun createEmployee(employeeData: EmployeeData): EmployeeId? {
-        val department = departmentRepository.getOne(employeeData.deptNo)
-        val savedEmployee = employeeRepository.save(convertEmployeeDataToEmployeeEntity(employeeData, department))
-        department.employees.add(savedEmployee)
-        return savedEmployee.empno?.let { EmployeeId(it) }
+        try {
+            val department = departmentRepository.getOne(employeeData.deptNo)
+            val savedEmployee = employeeRepository.save(convertEmployeeDataToEmployeeEntity(employeeData, department))
+            department.employees.add(savedEmployee)
+            return savedEmployee.empno?.let { EmployeeId(it) }
+        } catch (e: Exception) {
+            logger.error("Error occurred", e)
+            throw EmployeeServiceException(ErrorCodes.INTERNAL_ERROR)
+        }
     }
 
     @Transactional(readOnly = true)
@@ -35,7 +44,8 @@ open class EmployeeServiceImpl(private val employeeRepository: EmployeeRepositor
         try {
             val employee = employeeRepository.getOne(id)
             return convertEmployeeToEmployeeData(employee = employee)
-        } catch (e: EntityNotFoundException) {
+        } catch (e: JpaObjectRetrievalFailureException) {
+            logger.error("Error occurred", e)
             throw EmployeeServiceException(ErrorCodes.EMPLOYEE_NOT_FOUND)
         }
     }
