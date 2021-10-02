@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driverClassName: jdbc:postgresql://localhost:5432/postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: tzeZgb8Xif
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show_sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+
+# required to support h2c (http2 with plain text)
+server:
+  http2:
+    enabled: false
+
+basic-auths:
+  - user: allen
+    password: ENC(emnFDJGGvl20XUhTKR/NlY2/3qUkkl/c)
+    roles:
+      - READ
+      - WRITE
