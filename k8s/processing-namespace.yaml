@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: restful-services
+---
+kind: Secret
+apiVersion: v1
+type: kubernetes.io/dockerconfigjson
+metadata:
+  name: regcred
+  namespace: restful-services
+data:
+  .dockerconfigjson: "ewogICJhdXRocyI6ewogICAgImh0dHBzOi8vcXVheS5pby92Mi8iOnsKICAgICAgInVzZXJuYW1lIjoic2FuamF5YXNhaG9vIiwKICAgICAgInBhc3N3b3JkIjoiU3VzaGFtYSMyNjAxIiwKICAgICAgImVtYWlsIjoic2FuamF5YS1rdW1hci5zYWhvb0BocGUuY29tIiwKICAgICAgImF1dGgiOiJjMkZ1YW1GNVlYTmhhRzl2T2xOMWMyaGhiV0VqTWpZd01RPT0iCiAgICB9CiAgfQp9"
+---

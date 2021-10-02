@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employee-service-app-v1
+  annotations:
+    deployment.kubernetes.io/revision: "SNAPSHOT"
+  namespace: restful-services
+  labels:
+    app: employee-service-app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: employee-service-app
+      version: v1
+  revisionHistoryLimit: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      annotations:
+        kubernetes.io/change-cause: "SNAPSHOT"
+      labels:
+        app: employee-service-app
+        version: v1
+    spec:
+      containers:
+        - name: employee-service-app
+          image: quay.io/sanjayasahoo/employee-service:1.0.0-SNAPSHOT
+          env:
+            - name: JAVA_OPTS
+              value: -XX:MaxMetaspaceSize=128M -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Dspring.profiles.active=postgres
+            - name: PWDADMIN
+              value: PASSWORD
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: ui-port
+          resources:
+            requests:
+              memory: 1024Mi
+              cpu: 500m
+            limits:
+              memory: 1024Mi
+              cpu: 500m
+      imagePullSecrets:
+        - name: regcred
