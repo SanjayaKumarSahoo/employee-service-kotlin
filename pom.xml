@@ -17,6 +17,9 @@
     <properties>
         <java.version>11</java.version>
         <kotlin.version>1.4.31</kotlin.version>
+        <repository>${project.groupId}</repository>
+        <imageName>${project.artifactId}</imageName>
+        <imageVersion>${project.version}</imageVersion>
     </properties>
 
     <dependencies>
@@ -141,4 +144,81 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <version>1.0.0</version>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>javax.activation</groupId>
+                                <artifactId>activation</artifactId>
+                                <version>1.1.1</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <imageName>${repository}/${imageName}:${imageVersion}</imageName>
+                            <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
+                            <serverId>deployer</serverId>
+                            <resources>
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/classes/</directory>
+                                    <includes>
+                                        <include>Dockerfile</include>
+                                        <include>launch.sh</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+                <resources>
+                    <resource>
+                        <filtering>true</filtering>
+                        <directory>${project.basedir}/src/main/docker</directory>
+                        <includes>
+                            <include>Dockerfile</include>
+                        </includes>
+                    </resource>
+                    <resource>
+                        <directory>${project.basedir}/src/main/docker</directory>
+                        <excludes>
+                            <exclude>Dockerfile</exclude>
+                        </excludes>
+                    </resource>
+                    <resource>
+                        <directory>${project.basedir}/src/main/resources</directory>
+                        <filtering>true</filtering>
+                        <excludes>
+                            <exclude>**/application.properties</exclude>
+                            <exclude>**/application.yaml</exclude>
+                            <exclude>**/application.yml</exclude>
+                            <exclude>**/bootstrap.yml</exclude>
+                            <exclude>**/bootstrap.yaml</exclude>
+                        </excludes>
+                    </resource>
+                </resources>
+            </build>
+            <properties>
+                <docker.push.image>false</docker.push.image>
+            </properties>
+        </profile>
+    </profiles>
 </project>
