@@ -1,8 +1,8 @@
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
-    password: tzeZgb8Xif
-    url: jdbc:postgresql://postgres-release-postgresql-headless.postgres.svc.cluster.local:5432/postgres
+    password: bjsqFv5Wjr
+    url: jdbc:postgresql://postgres-postgresql-headless.postgres.svc.cluster.local:5432/postgres
     username: postgres
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
